@@ -116,7 +116,7 @@ func (t *SimpleChaincode) write2(stub shim.ChaincodeStubInterface, args []string
 		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the variable and value to set")
 	}
 
-	key  := args[0] + args[1]										//rename for funsies
+	key  = args[0] + args[1]										//rename for funsies
 	name = args[0]
 	subj = args[1]
 	vote = args[2]
