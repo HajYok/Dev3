@@ -108,7 +108,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 // Write2 - write variable into chaincode state
 // ============================================================================================================================
 func (t *SimpleChaincode) write2(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var name, subj, vote string // Entities
+	var key, name, subj, vote string // Entities
 	var err error
 	fmt.Println("running write2()")
 
@@ -132,7 +132,7 @@ func (t *SimpleChaincode) write2(stub shim.ChaincodeStubInterface, args []string
 // Read2 - read a variable from chaincode state
 // ============================================================================================================================
 func (t *SimpleChaincode) read2(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	var name, jsonResp string
+	var key, jsonResp string
 	var err error
 
 	if len(args) != 2 {
