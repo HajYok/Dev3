@@ -153,3 +153,48 @@ func (t *SimpleChaincode) read2(stub shim.ChaincodeStubInterface, args []string)
 	return valAsbytes, nil							//send it onward
 }
 
+// ============================================================================================================================
+// Write3 - write variable into chaincode state
+// ============================================================================================================================
+func (t *SimpleChaincode) write3(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var subject__number, subject__title, subject__content, subject__type string // Entities
+	var err error
+	fmt.Println("running write3()")
+
+	if len(args) != 4 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the variable and value to set")
+	}
+
+	subject__number = args[0]									//rename for funsies
+	subject__title = args[1]
+	subject__content = args[2]
+	subject__type = args[3]
+	str := `{"subject__number": "` + subject__number + `", "subject__title": "` + subject__title + `", "subject__content": "` + subject__content + `", "subject__type": "` + subject__type + `"}`
+	err = stub.PutState(subject__number, []byte(str))						//write the variable into the chaincode state
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// ============================================================================================================================
+// Read3 - read a variable from chaincode state
+// ============================================================================================================================
+func (t *SimpleChaincode) read3(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var subject__number, jsonResp string
+	var err error
+
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. Expecting name of the var to query")
+	}
+
+	subject__number = args[0]
+	valAsbytes, err := stub.GetState(subject__number)					//get the var from chaincode state
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + subject__number + "\"}"
+		return nil, errors.New(jsonResp)
+	}
+
+	return valAsbytes, nil							//send it onward
+}
+
