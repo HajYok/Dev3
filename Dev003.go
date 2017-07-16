@@ -223,7 +223,7 @@ func (t *SimpleChaincode) write4(stub shim.ChaincodeStubInterface, args []string
 	user = args[2]
 	number_of_shares_held = args[3]
 	str := `{"key_shares_held": "` + key_shares_held + `", "bill_number": "` + bill_number + `", "user": "` + user + `", "number_of_shares_held": "` + number_of_shares_held + `"}`
-	err = stub.PutState(name, []byte(str))						//write the variable into the chaincode state
+	err = stub.PutState(key_shares_held, []byte(str))						//write the variable into the chaincode state
 	if err != nil {
 		return nil, err
 	}
@@ -242,7 +242,7 @@ func (t *SimpleChaincode) read4(stub shim.ChaincodeStubInterface, args []string)
 	}
 
 	key_shares_held = args[0]
-	valAsbytes, err := stub.GetState(name)					//get the var from chaincode state
+	valAsbytes, err := stub.GetState(key_shares_held)					//get the var from chaincode state
 	if err != nil {
 		jsonResp = "{\"Error\":\"Failed to get state for " + key_shares_held + "\"}"
 		return nil, errors.New(jsonResp)
