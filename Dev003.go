@@ -44,6 +44,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.write2(stub, args)
 	} else if function == "write3" {
 		return t.write3(stub, args)
+	} else if function == "write4" {
+		return t.write4(stub, args)
 	}
 	fmt.Println("invoke did not find func: " + function)
 
@@ -61,6 +63,8 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 		return t.read2(stub, args)
 	} else if function == "read3" {
 		return t.read3(stub, args)
+	} else if function == "read4" {
+		return t.read4(stub, args)
 	}
 	fmt.Println("query did not find func: " + function)
 
@@ -202,3 +206,47 @@ func (t *SimpleChaincode) read3(stub shim.ChaincodeStubInterface, args []string)
 	return valAsbytes, nil							//send it onward
 }
 
+// ============================================================================================================================
+// Write4 - write variable into chaincode state
+// ============================================================================================================================
+func (t *SimpleChaincode) write4(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var key_shares_held, bill_number, user, number_of_shares_held string // Entities
+	var err error
+	fmt.Println("running write4()")
+
+	if len(args) != 4 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 2. name of the variable and value to set")
+	}
+
+	key_shares_held = args[0]										//rename for funsies
+	bill_number = args[1]
+	user = args[2]
+	number_of_shares_held = args[3]
+	str := `{"key_shares_held": "` + key_shares_held + `", "bill_number": "` + bill_number + `", "user": "` + user + `", "number_of_shares_held": "` + number_of_shares_held + `"}`
+	err = stub.PutState(name, []byte(str))						//write the variable into the chaincode state
+	if err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+// ============================================================================================================================
+// Read4 - read a variable from chaincode state
+// ============================================================================================================================
+func (t *SimpleChaincode) read4(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	var key_shares_held, jsonResp string
+	var err error
+
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. Expecting name of the var to query")
+	}
+
+	key_shares_held = args[0]
+	valAsbytes, err := stub.GetState(name)					//get the var from chaincode state
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + key_shares_held + "\"}"
+		return nil, errors.New(jsonResp)
+	}
+
+	return valAsbytes, nil							//send it onward
+}
